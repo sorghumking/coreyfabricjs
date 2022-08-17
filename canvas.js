@@ -22,7 +22,7 @@ export class CoreyWebCanvas extends fabric.Canvas {
             zoom *= 0.999 ** delta;
             if (zoom > 20) zoom = 20;
             if (zoom < 0.01) zoom = 0.01;
-            this.setZoom(zoom);
+            this.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
             opt.e.preventDefault();
             opt.e.stopPropagation();
             updateFn();
