@@ -1,5 +1,16 @@
+// ultra-thin fabric.Canvas wrapper
+export class CoreyWebCanvas extends fabric.Canvas {
+    constructor(arg) {
+        super(arg);
+    }
+
+    _initPanAndZoom(updateFn) {
+        initPanAndZoom(this, updateFn);
+    }
+}
+
 // Pan & zoom logic from fabricjs tutorial http://fabricjs.com/fabric-intro-part-5
-export function initPanAndZoom(canvas, updateFn) {
+function initPanAndZoom(canvas, updateFn) {
     canvas.on('mouse:wheel', function (opt) {
         var delta = opt.e.deltaY;
         var zoom = canvas.getZoom();

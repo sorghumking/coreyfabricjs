@@ -1,29 +1,5 @@
-// draw scenespace ruler on fabricjs canvas
-import { initPanAndZoom } from './canvas.js';
-
-
-$(document).ready(initCanvas);
-
-var canvas = null;
-
-function initCanvas() {
-    canvas = new fabric.Canvas('c');
-    initPanAndZoom(canvas, update);
-    canvas.renderAll(); // init canvas.vptCoords
-    update();
-}
-
-function update() {
-    drawRuler();
-}
-
-// find multiple of target closest to num
-function nearest(num, target) {
-    return Math.round(num / target) * target;
-}
-
 var rulerTicks = [];
-function drawRuler() {
+export function drawRuler(canvas) {
     for (var tick of rulerTicks) {
         canvas.remove(tick);
     }
@@ -35,13 +11,18 @@ function drawRuler() {
     const start = nearest(left, target);
     const rate = range / target;
     for (var cur = start; cur <= right;) {
-        var tick = createTickRect(cur, canvas.vptCoords.bl.y, 30 / canvas.getZoom());
+        var tick = createTickRect(cur, canvas.vptCoords.bl.y, 30 / canvas.getZoom(), canvas.getZoom());
         rulerTicks.push(tick);
         cur += target;
     }
     for (var tick of rulerTicks) {
         canvas.add(tick);
     }
+}
+
+// find multiple of target closest to num
+function nearest(num, target) {
+    return Math.round(num / target) * target;
 }
 
 function getTick(range) {
@@ -62,11 +43,11 @@ function getTick(range) {
     return target;
 }
 
-function createTickRect(x, y, height) {
+function createTickRect(x, y, height, zoom) {
     return new fabric.Rect({
         left: x,
         top: y - height,
-        width: 1 / canvas.getZoom(),
+        width: 1 / zoom,
         height: height,
         fill: 'rgb(0,0,0)',
         selectable: false,
