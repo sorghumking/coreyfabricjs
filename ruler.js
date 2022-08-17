@@ -7,7 +7,7 @@ export function drawRuler(canvas) {
     const left = canvas.vptCoords.tl.x
     const right = canvas.vptCoords.tr.x
     const range = right - left;
-    const target = getTick(range);
+    const target = getTick(range, canvas);
     const start = nearest(left, target);
     const rate = range / target;
     for (var cur = start; cur <= right;) {
@@ -26,21 +26,23 @@ function nearest(num, target) {
     return Math.round(num / target) * target;
 }
 
-function getTick(range) {
-    var target = 1000.0; // gotta start somewhere
+function getTick(range, canvas) {
+    const INTER_TICK_MIN = 30.0; // min pixels between ticks
+    const INTER_TICK_MAX = 500.0; // max pixels between ticks
+    var target = 1000.0;
     while (true) {
-        if (range / target < 10) {
-            // console.log("old target = ", target, " new = ", target/2);
-            target /= 2;
+        const pixBetweenTicks = canvas.getZoom() * target;
+        if (pixBetweenTicks < INTER_TICK_MIN) {
+            target *= 10;
             continue;
-        } else if (range / target > 30) {
-            // console.log("old target = ", target, " new = ", target*2);
-            target *= 2;
+        } else if (pixBetweenTicks > INTER_TICK_MAX) {
+            target /= 10;
             continue;
         }
         break;
     }
     // console.log("target = ", target, " r/t = ", range/target);
+    //console.log("tick spacing = ", (canvas.getZoom())*target);
     return target;
 }
 
