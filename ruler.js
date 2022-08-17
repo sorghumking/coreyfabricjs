@@ -1,8 +1,8 @@
 var rulerTicks = [];
+var rulerLabels = [];
 export function drawRuler(canvas) {
-    for (var tick of rulerTicks) {
-        canvas.remove(tick);
-    }
+    for (var tick of rulerTicks) { canvas.remove(tick); }
+    for (var label of rulerLabels ) { canvas.remove(label); }
     rulerTicks = [];
     const left = canvas.vptCoords.tl.x
     const right = canvas.vptCoords.tr.x
@@ -12,11 +12,12 @@ export function drawRuler(canvas) {
     const rate = range / target;
     for (var cur = start; cur <= right;) {
         var tick = createTickRect(cur, canvas.vptCoords.bl.y, 30 / canvas.getZoom(), canvas.getZoom());
-        rulerTicks.push(tick);
-        cur += target;
-    }
-    for (var tick of rulerTicks) {
         canvas.add(tick);
+        rulerTicks.push(tick);
+        var label = createTickLabel(cur.toString(), cur, canvas.vptCoords.bl.y - 50 / canvas.getZoom(), canvas.getZoom());
+        canvas.add(label);
+        rulerLabels.push(label);
+        cur += target;
     }
 }
 
@@ -54,4 +55,17 @@ function createTickRect(x, y, height, zoom) {
         strokeWidth: 0,
         strokeUniform: true
     });
+}
+
+function createTickLabel(text, x, y, zoom) {
+    return new fabric.Text(
+        text,
+        {
+            left: x,
+            top: y,
+            fontSize: 20 / zoom,
+            selectable: false,
+            strokeWidth: 0
+        }
+    );
 }
