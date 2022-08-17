@@ -1,0 +1,5 @@
+8/17/2022
+fabricjs coreyweb experiments
+
+Run local static server with: npx browser-sync start --server
+In browser, navigate to localhost:3000
