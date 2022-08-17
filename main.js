@@ -7,10 +7,9 @@ $(document).ready(initCanvas);
 var canvas = null;
 
 function initCanvas() {
-    //canvas = new fabric.Canvas('c');
     canvas = new CoreyWebCanvas('c');
     canvas.renderAll(); // init canvas.vptCoords
-    canvas._initPanAndZoom(update);
+    canvas.init(update);
     update();
 }
 
