@@ -3,3 +3,8 @@ fabricjs coreyweb experiments
 
 Run local static server with: npx browser-sync start --server
 In browser, navigate to localhost:3000
+
+May take a while to start up, wait for the "Serving files from..." message
+
+### Notes
+- Performance takes a major hit when lots of ruler ticks+labels are onscreen
