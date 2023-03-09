@@ -14,7 +14,49 @@ function initCanvas() {
     canvas.renderAll(); // init canvas.vptCoords
     canvas.init(update);
     loadImages(canvas);
+    loadLithRect(canvas);
     update();
+}
+
+function loadLithRect(canvas) {
+    let rect = new fabric.Rect({
+        width: 100,
+        height: 100,
+        selectable: true,
+        hasControls: false,
+        backgroundColor: 'green',
+        borderColor: 'red',
+        borderWidth: 2,
+        lockMovementX: true,
+        lockMovementY: true
+    });
+
+    let rect2 = new fabric.Rect({
+        left: 100,
+        width: 100,
+        height: 100,
+        selectable: true,
+        // hasControls: false,
+        backgroundColor: 'orange',
+        borderColor: 'red',
+        borderWidth: 2,
+        // lockMovementX: true,
+        lockMovementY: true
+    });
+
+    canvas.add(rect);
+    canvas.add(rect2);
+
+    fabric.util.loadImage('img/lithologies/601.png', (img) => {
+        rect.set('fill', new fabric.Pattern({
+            source: img,
+            repeat: 'repeat',
+        }));
+        rect2.set('fill', new fabric.Pattern({
+            source: img,
+            repeat: 'repeat',
+        }));
+    });
 }
 
 function loadImages(canvas) {
@@ -64,19 +106,28 @@ function toggleRuler() {
 $('#crop').on('click', toggleCrop);
 
 // Can use cropX to clip left side of image, but not right.
-// fabric.Object.clipTo() looks more versatile.
+// Adjust width to "crop" right side of image.
+
 var cropped = false;
 function toggleCrop() {
-    // const crop = cropped ? -100 : 100;
-    // coreImage.cropX = coreImage.cropX + crop;
+    const scaling = coreImage.getObjectScaling();
+    console.log(scaling);
+
+    const crop = cropped ? -1000 : 1000;
+    coreImage.cropX = coreImage.cropX + crop; // crop left
+    coreImage.left = coreImage.left + crop * scaling.scaleX; // negate left shift due to left crop
+    coreImage.width = coreImage.width - crop * 2; // crop right (must double to account for cropped left)
     cropped = !cropped;
 
-    if (cropped) {
-        let clipCircle = new fabric.Rect({top:coreImage.top, left:coreImage.left, width:coreImage.width, height: 1000});
-        coreImage.clipPath = clipCircle;
-    } else {
-        coreImage.clipPath = null;
-    }
+    // Clipping the Image's clipPath with a fabric.Rect clips correctly, but causes the image to become blurry.
+    // This seems to be an unresolved issue in FabricJS.
+    // if (cropped) {
+    //     const botClip = 250;
+    //     let clipRect = new fabric.Rect({top:-coreImage.height/2, left:-coreImage.width/2, width:coreImage.width - botClip, height: coreImage.height});
+    //     coreImage.clipPath = clipRect;
+    // } else {
+    //     coreImage.clipPath = null;
+    // }
 
     canvas.requestRenderAll();
 }
